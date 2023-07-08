@@ -22,7 +22,7 @@
 files=( $(find ./ -type f) )   # Find all files in the current directory and subdirectories
 # files=( $(find ./CD3_files -type f) )
 
-batch_size=2000                 # Define the batch size
+batch_size=5000                 # Define the batch size
 total_files=${#files[@]}       # Get total number of files
 batches=$((($total_files + $batch_size - 1) / $batch_size))
 
@@ -35,7 +35,7 @@ batches=$((($total_files + $batch_size - 1) / $batch_size))
 #     end=$((total_files-1))
 #   fi
 
-start_batch=0    # Define starting batch number
+start_batch=0   # Define starting batch number
 
 for ((i=$start_batch; i<$batches; i++))
 do
