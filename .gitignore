@@ -1,7 +1,4 @@
 *.svs
 .vscode/settings.json
 .Rproj.user
-HE4_files
-HE4.dzi
-HE4.html
 .Rhistory
