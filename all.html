@@ -1,10 +1,7 @@
 <html> <!-- do not use <!DOCTYPE html> -->
 
 <head>
-  <title>TemplateEN templateTR</title>
-  <meta name="keywords" content="TemplateEN, templateTR, patoloji, atlas, pathology, whole slide image">
 
-  <meta name="description" content="TemplateEN templateTR">
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,49 +33,129 @@
 
 
   <script type="text/javascript">
+
     var viewer = OpenSeadragon({
-      id: 'openseadragon1',
-      //        prefixUrl: 'https://images.patolojiatlasi.com/openseadragon/images/',
-      prefixUrl: './openseadragon/images/',
+      id: "openseadragon1",
+      prefixUrl: "https://openseadragon.github.io/openseadragon/images/",
+      tileSources: [
+        {
+          Image: {
+            Url: './HE1_files/',
+            TileSize: '254',
+            Overlap: '1',
+            Format: 'jpeg',
+            ServerFormat: 'Default',
+            xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+            Size: {
+              Width: '79923',
+              Height: '42180'
+            }
+          },
+          title: "Your notes for Image 1" // This is your note for the first image
+        },
 
-      showHomeControl: false,
-      showRotationControl: true,
-      showNavigator: true,
-      showFlipControl: true,
-      navigatorBackground: 'rgb(240, 240, 240)',
 
-
-      tileSources: {
-        Image: {
-          Url: './HE_files/', // name of image folder
-          TileSize: '254', // see .dzi file
-          Overlap: '1', // see .dzi file
-          Format: 'jpeg', // see .dzi file
-          ServerFormat: 'Default', // optional
-          xmlns: 'http://schemas.microsoft.com/deepzoom/2008', // see .dzi file
-          Size: {
-            Width: '51792', // see .dzi file
-            Height: '30580' // see .dzi file
+        {
+          Image: {
+            Url: './HE2_files/',
+            TileSize: '254',
+            Overlap: '1',
+            Format: 'jpeg',
+            ServerFormat: 'Default',
+            xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+            Size: {
+              Width: '76638', // see .dzi file
+              Height: '51504' // see .dzi file
+            }
+          }
+        },
+        {
+          Image: {
+            Url: './HE3_files/', // name of image folder
+            TileSize: '254', // see .dzi file
+            Overlap: '1', // see .dzi file
+            Format: 'jpeg', // see .dzi file
+            ServerFormat: 'Default', // optional
+            xmlns: 'http://schemas.microsoft.com/deepzoom/2008', // see .dzi file
+            Size: {
+              Width: '82344', // see .dzi file
+              Height: '44080' // see .dzi file
+            }
+          }
+        },
+        {
+          Image: {
+            Url: './HE4_files/', // name of image folder
+            TileSize: '254', // see .dzi file
+            Overlap: '1', // see .dzi file
+            Format: 'jpeg', // see .dzi file
+            ServerFormat: 'Default', // optional
+            xmlns: 'http://schemas.microsoft.com/deepzoom/2008', // see .dzi file
+            Size: {
+              Width: '83965', // see .dzi file
+              Height: '41871' // see .dzi file
+            }
           }
         }
-      }
-      // ,
-      // tileSources: "yourwsi.dzi",
-      // sequenceMode: false,
-      // autoHideControls: true,
-      // animationTime: 1.0,
-      // blendTime: 0.6,
-      // constrainDuringPan: true,
-      // maxZoomPixelRatio: 1,
-      // visibilityRatio: 1,
-      // zoomPerScrolli: 1,
-      // defaultZoomLevel: 1,
-      // showReferenceStrip: true,
-      // showNavigator:  true,
-      // showFullPageControl: false
-
-
+        // Add other images as required
+      ],
+      sequenceMode: true,
+      showReferenceStrip: true
     });
+
+
+
+
+
+    // var viewer = OpenSeadragon({
+    //   id: 'openseadragon1',
+    //   //        prefixUrl: 'https://images.patolojiatlasi.com/openseadragon/images/',
+    //   prefixUrl: './openseadragon/images/',
+
+    //   showHomeControl: false,
+    //   showRotationControl: true,
+    //   showNavigator: true,
+    //   showFlipControl: true,
+    //   navigatorBackground: 'rgb(240, 240, 240)',
+
+
+
+    // tileSources: {
+    //   Image: {
+    //     Url: './HE_files/', // name of image folder
+    //     TileSize: '254', // see .dzi file
+    //     Overlap: '1', // see .dzi file
+    //     Format: 'jpeg', // see .dzi file
+    //     ServerFormat: 'Default', // optional
+    //     xmlns: 'http://schemas.microsoft.com/deepzoom/2008', // see .dzi file
+    //     Size: {
+    //       Width: '79923', // see .dzi file
+    //       Height: '42180' // see .dzi file
+    //     }
+    //   }
+    // },
+
+
+
+
+
+    // ,
+    // tileSources: "yourwsi.dzi",
+    // sequenceMode: false,
+    // autoHideControls: true,
+    // animationTime: 1.0,
+    // blendTime: 0.6,
+    // constrainDuringPan: true,
+    // maxZoomPixelRatio: 1,
+    // visibilityRatio: 1,
+    // zoomPerScrolli: 1,
+    // defaultZoomLevel: 1,
+    // showReferenceStrip: true,
+    // showNavigator:  true,
+    // showFullPageControl: false
+
+
+    // });
 
     /*     viewer.scalebar({
             minWidth: '100px',
