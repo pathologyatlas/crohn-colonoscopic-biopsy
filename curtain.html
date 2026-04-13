@@ -1,0 +1,637 @@
+<html> <!-- do not use <!DOCTYPE html> -->
+
+<head>
+
+  <title>Crohn Disease Colonoscopic Biopsy Crohn Hastalığı Kolonoskopik Biyopsi - Stain Comparison</title>
+
+  <meta name="keywords"
+    content="Crohn Disease Colonoscopic Biopsy, Crohn Hastalığı Kolonoskopik Biyopsi, patoloji, atlas, pathology, whole slide image, patoloji, atlas, pathology, whole slide image, comparison">
+
+  <meta name="description" content="Crohn Disease Colonoscopic Biopsy Crohn Hastalığı Kolonoskopik Biyopsi - compare stains with curtain slider">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://images.patolojiatlasi.com/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://images.patolojiatlasi.com/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://images.patolojiatlasi.com/img/favicon-16x16.png">
+  <link rel="manifest" href="https://images.patolojiatlasi.com/img/site.webmanifest">
+  <link rel="icon" href="https://images.patolojiatlasi.com/img/favicon.ico" type="image/x-icon" />
+
+  <script src="https://images.patolojiatlasi.com/openseadragon/openseadragon.min.js"></script>
+  <script src="./openseadragon/openseadragon.min.js"></script>
+  <script src="./openseadragon/openseadragon-scalebar.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1a1a; color: #fff; font-family: Arial, sans-serif; overflow: hidden; }
+
+    #controls {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 100; display: flex; gap: 12px; align-items: center;
+      background: rgba(0,0,0,0.75); padding: 8px 16px; border-radius: 8px;
+      font-size: 14px;
+    }
+    #controls select {
+      padding: 4px 8px; border-radius: 4px; border: 1px solid #555;
+      background: #333; color: #fff; font-size: 14px; cursor: pointer;
+    }
+    #controls label { font-weight: bold; }
+    #controls button {
+      padding: 4px 8px; border-radius: 4px; border: 1px solid #555;
+      background: #333; color: #fff; font-size: 14px; cursor: pointer;
+      min-width: 28px;
+    }
+    #controls button:hover { background: #555; }
+    .ctrl-group {
+      display: flex; gap: 4px; align-items: center;
+      border: 1px solid #444; border-radius: 6px; padding: 4px 8px;
+    }
+    .ctrl-separator { width: 1px; height: 24px; background: #555; }
+    #controls input[type="number"] {
+      width: 58px; padding: 4px 4px; border-radius: 4px; border: 1px solid #555;
+      background: #333; color: #fff; font-size: 13px; text-align: center;
+      -moz-appearance: textfield;
+    }
+    #controls input[type="number"]::-webkit-inner-spin-button { opacity: 1; }
+    .rot-display { font-size: 12px; color: #aaa; min-width: 20px; text-align: center; }
+    #opacity-group { display: flex; gap: 6px; align-items: center; }
+    #opacity-slider {
+      width: 100px; accent-color: #fff; cursor: pointer;
+    }
+    #opacity-val { font-size: 12px; color: #aaa; min-width: 30px; text-align: center; }
+
+    #align-btn { font-weight: bold; }
+    #align-btn.active { background: #c44; border-color: #e66; color: #fff; }
+    #align-controls { display: none; gap: 6px; align-items: center; }
+    #align-controls.visible { display: flex; }
+    #align-controls label { font-size: 13px; }
+    #align-controls input[type="radio"] { margin: 0; cursor: pointer; }
+    .align-banner {
+      display: none; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 100; background: rgba(196,68,68,0.85); color: #fff; padding: 6px 18px;
+      border-radius: 6px; font-size: 13px; font-weight: bold; pointer-events: none;
+    }
+    .align-banner.visible { display: block; }
+
+    #nudge-panel {
+      display: none; position: absolute; top: 52px; left: 50%; transform: translateX(-50%);
+      z-index: 100; background: rgba(0,0,0,0.82); padding: 8px 14px; border-radius: 8px;
+      font-size: 13px; gap: 10px; align-items: center;
+    }
+    #nudge-panel.visible { display: flex; }
+    #nudge-panel label { font-weight: bold; font-size: 12px; }
+    #nudge-panel button {
+      padding: 3px 7px; border-radius: 4px; border: 1px solid #555;
+      background: #333; color: #fff; font-size: 14px; cursor: pointer;
+      min-width: 30px; text-align: center;
+    }
+    #nudge-panel button:hover { background: #555; }
+    .nudge-group {
+      display: flex; gap: 3px; align-items: center;
+      border: 1px solid #444; border-radius: 6px; padding: 4px 6px;
+    }
+    .nudge-arrows {
+      display: grid; grid-template-columns: 30px 30px 30px; grid-template-rows: 28px 28px;
+      gap: 2px; align-items: center; justify-items: center;
+    }
+    .nudge-arrows button { min-width: 30px; padding: 2px 0; }
+    #nudge-panel select {
+      padding: 3px 6px; border-radius: 4px; border: 1px solid #555;
+      background: #333; color: #fff; font-size: 13px; cursor: pointer;
+    }
+    .nudge-side-label {
+      font-weight: bold; color: #6cf; font-size: 13px;
+    }
+
+    #viewer-container {
+      position: relative; width: 100%; height: calc(100vh - 0px);
+    }
+
+    #viewer-left, #viewer-right {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    }
+    #viewer-right { z-index: 2; pointer-events: none; }
+    #viewer-left  { z-index: 1; }
+
+    #curtain-slider {
+      position: absolute; top: 0; z-index: 50;
+      width: 4px; height: 100%; background: #fff;
+      cursor: ew-resize; left: 50%;
+    }
+    #curtain-slider::after {
+      content: ''; position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.9); border: 2px solid #333;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    #curtain-slider::before {
+      content: '\25C0  \25B6'; position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 1; font-size: 11px; color: #333; white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .stain-label {
+      position: absolute; top: 52px; z-index: 60;
+      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 12px;
+      border-radius: 4px; font-size: 13px; font-weight: bold;
+      pointer-events: none;
+    }
+    #label-left  { left: 10px; }
+    #label-right { right: 10px; }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="controls">
+    <div class="ctrl-group">
+      <label>Left:</label>
+      <!-- Update <option> values and labels to match your stains -->
+      <select id="select-left">
+        <option value="HE1" selected>HE1</option>
+        <option value="HE2">HE2</option>
+        <option value="HE3">HE3</option>
+        <option value="HE4">HE4</option>
+      </select>
+      <button data-rot="left" data-step="-90" title="-90°">&#8634;</button>
+      <button data-rot="left" data-step="-1" title="-1°">-1</button>
+      <input type="number" id="rot-left" value="0" min="-360" max="360" step="1" title="Rotation degrees">
+      <button data-rot="left" data-step="1" title="+1°">+1</button>
+      <button data-rot="left" data-step="90" title="+90°">&#8635;</button>
+      <button id="flip-left-h" title="Flip horizontal">&#8596;</button>
+      <button id="flip-left-v" title="Flip vertical">&#8597;</button>
+    </div>
+    <div class="ctrl-separator"></div>
+    <div id="opacity-group">
+      <label>Opacity:</label>
+      <input type="range" id="opacity-slider" min="0" max="100" value="100" title="Right layer opacity">
+      <span id="opacity-val">100%</span>
+    </div>
+    <div class="ctrl-separator"></div>
+    <button id="align-btn" title="Toggle align mode to independently move/resize each side">Align</button>
+    <div id="align-controls">
+      <label>Move:</label>
+      <input type="radio" name="align-side" value="left" id="align-left" checked>
+      <label for="align-left" style="font-weight:normal">Left</label>
+      <input type="radio" name="align-side" value="right" id="align-right">
+      <label for="align-right" style="font-weight:normal">Right</label>
+    </div>
+    <div class="ctrl-separator"></div>
+    <div class="ctrl-group">
+      <label>Right:</label>
+      <!-- Update <option> values and labels to match your stains -->
+      <select id="select-right">
+        <option value="HE1">HE1</option>
+        <option value="HE2" selected>HE2</option>
+        <option value="HE3">HE3</option>
+        <option value="HE4">HE4</option>
+      </select>
+      <button data-rot="right" data-step="-90" title="-90°">&#8634;</button>
+      <button data-rot="right" data-step="-1" title="-1°">-1</button>
+      <input type="number" id="rot-right" value="0" min="-360" max="360" step="1" title="Rotation degrees">
+      <button data-rot="right" data-step="1" title="+1°">+1</button>
+      <button data-rot="right" data-step="90" title="+90°">&#8635;</button>
+      <button id="flip-right-h" title="Flip horizontal">&#8596;</button>
+      <button id="flip-right-v" title="Flip vertical">&#8597;</button>
+    </div>
+  </div>
+
+  <div id="nudge-panel">
+    <span class="nudge-side-label" id="nudge-side-label">Left</span>
+    <div class="nudge-group">
+      <label>Step:</label>
+      <select id="nudge-step">
+        <option value="0.001">Tiny</option>
+        <option value="0.005" selected>Fine</option>
+        <option value="0.02">Medium</option>
+        <option value="0.1">Large</option>
+      </select>
+    </div>
+    <div class="nudge-group">
+      <label>Move:</label>
+      <div class="nudge-arrows">
+        <span></span>
+        <button id="nudge-up" title="Move up">&#9650;</button>
+        <span></span>
+        <button id="nudge-left-dir" title="Move left">&#9664;</button>
+        <button id="nudge-down" title="Move down">&#9660;</button>
+        <button id="nudge-right-dir" title="Move right">&#9654;</button>
+      </div>
+    </div>
+    <div class="nudge-group">
+      <label>Size:</label>
+      <button id="zoom-out-fine" title="Zoom out 1%">-1%</button>
+      <button id="zoom-out-med" title="Zoom out 5%">-5%</button>
+      <button id="zoom-in-med" title="Zoom in 5%">+5%</button>
+      <button id="zoom-in-fine" title="Zoom in 1%">+1%</button>
+    </div>
+  </div>
+
+  <div id="viewer-container">
+    <div id="viewer-left"></div>
+    <div id="viewer-right"></div>
+    <div id="curtain-slider"></div>
+    <div id="label-left" class="stain-label">HE1</div>
+    <div id="label-right" class="stain-label">HE2</div>
+    <div id="align-banner" class="align-banner">ALIGN MODE — drag to move, scroll to resize. Click Align again to lock.</div>
+  </div>
+
+  <script type="text/javascript">
+
+    // =====================================================================
+    // TEMPLATE: Curtain (slider overlay) comparison viewer
+    // Customize the tileSources object below with your stain names,
+    // folder paths, and dimensions from .dzi files.
+    // Also update the stainLabels, <select> options, and default selections.
+    // =====================================================================
+
+    // Tile source definitions — update Url, Width, Height per stain from .dzi files
+    var tileSources = {
+      HE1: {
+        Image: {
+          Url: './HE1_files/',
+          TileSize: '254', Overlap: '1', Format: 'jpeg',
+          ServerFormat: 'Default',
+          xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+          Size: { Width: '50699', Height: '39685' }
+        }
+      },
+      HE2: {
+        Image: {
+          Url: './HE2_files/',
+          TileSize: '254', Overlap: '1', Format: 'jpeg',
+          ServerFormat: 'Default',
+          xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+          Size: { Width: '40232', Height: '35784' }
+        }
+      },
+      HE3: {
+        Image: {
+          Url: './HE3_files/',
+          TileSize: '254', Overlap: '1', Format: 'jpeg',
+          ServerFormat: 'Default',
+          xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+          Size: { Width: '47277', Height: '39982' }
+        }
+      },
+      HE4: {
+        Image: {
+          Url: './HE4_files/',
+          TileSize: '254', Overlap: '1', Format: 'jpeg',
+          ServerFormat: 'Default',
+          xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+          Size: { Width: '40028', Height: '30353' }
+        }
+      }
+    };
+
+    // Update labels to match your stains
+    var stainLabels = { HE1: 'HE1', HE2: 'HE2', HE3: 'HE3', HE4: 'HE4' };
+
+    // Create two viewers
+    var viewerLeft = OpenSeadragon({
+      id: 'viewer-left',
+      prefixUrl: './openseadragon/images/',
+      tileSources: tileSources['HE1'],
+      showNavigator: true,
+      navigatorPosition: 'BOTTOM_LEFT',
+      showHomeControl: false,
+      showRotationControl: true,
+      showFlipControl: true,
+      navigatorBackground: 'rgb(240, 240, 240)',
+      gestureSettingsMouse: { clickToZoom: false }
+    });
+
+    var viewerRight = OpenSeadragon({
+      id: 'viewer-right',
+      prefixUrl: './openseadragon/images/',
+      tileSources: tileSources['HE2'],
+      showNavigationControl: false,
+      showNavigator: false,
+      gestureSettingsMouse: { clickToZoom: false }
+    });
+
+    // Scalebar on LEFT viewer only. In align mode the two sides can drift out
+    // of lock-step (different zoom ratios), so attaching to one viewer is the
+    // only honest option — it reflects the scale of whatever stain is on the left.
+    viewerLeft.scalebar({
+      type: OpenSeadragon.ScalebarType.MICROSCOPY,
+      pixelsPerMeter: 1.98255e+06,
+      minWidth: '120px',
+      location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
+      color: 'black',
+      fontColor: 'black',
+      backgroundColor: 'rgba(255,255,255,0.7)',
+      barThickness: 3,
+      fontSize: '12px',
+      xOffset: 14,
+      yOffset: 14
+    });
+
+    // --- Viewport sync with offset ---
+    var syncing = false;
+    var alignMode = false;
+    var panOffset = new OpenSeadragon.Point(0, 0);
+    var zoomRatio = 1;
+
+    function captureOffset() {
+      var lc = viewerLeft.viewport.getCenter();
+      var rc = viewerRight.viewport.getCenter();
+      var lz = viewerLeft.viewport.getZoom();
+      var rz = viewerRight.viewport.getZoom();
+      panOffset = new OpenSeadragon.Point(rc.x - lc.x, rc.y - lc.y);
+      zoomRatio = rz / lz;
+    }
+
+    function resetOffset() {
+      panOffset = new OpenSeadragon.Point(0, 0);
+      zoomRatio = 1;
+    }
+
+    function syncViewport(source, target, sourceIsLeft) {
+      if (syncing || alignMode) return;
+      syncing = true;
+      var sz = source.viewport.getZoom();
+      var sc = source.viewport.getCenter();
+      if (sourceIsLeft) {
+        target.viewport.zoomTo(sz * zoomRatio, null, true);
+        target.viewport.panTo(new OpenSeadragon.Point(
+          sc.x + panOffset.x, sc.y + panOffset.y
+        ), true);
+      } else {
+        target.viewport.zoomTo(sz / zoomRatio, null, true);
+        target.viewport.panTo(new OpenSeadragon.Point(
+          sc.x - panOffset.x, sc.y - panOffset.y
+        ), true);
+      }
+      syncing = false;
+    }
+
+    viewerLeft.addHandler('viewport-change', function () {
+      syncViewport(viewerLeft, viewerRight, true);
+    });
+    viewerRight.addHandler('viewport-change', function () {
+      syncViewport(viewerRight, viewerLeft, false);
+    });
+
+    // --- Curtain slider ---
+    var slider = document.getElementById('curtain-slider');
+    var container = document.getElementById('viewer-container');
+    var rightCanvas = document.getElementById('viewer-right');
+    var curtainPos = 0.5;
+
+    function updateCurtain() {
+      var rect = container.getBoundingClientRect();
+      var px = curtainPos * rect.width;
+      slider.style.left = px + 'px';
+      rightCanvas.style.clipPath = 'inset(0 0 0 ' + px + 'px)';
+    }
+
+    rightCanvas.style.pointerEvents = 'none';
+
+    updateCurtain();
+    window.addEventListener('resize', updateCurtain);
+
+    // Drag handling
+    var dragging = false;
+
+    slider.addEventListener('mousedown', function (e) {
+      dragging = true;
+      e.preventDefault();
+    });
+    slider.addEventListener('touchstart', function (e) {
+      dragging = true;
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      var rect = container.getBoundingClientRect();
+      curtainPos = Math.max(0.02, Math.min(0.98, (e.clientX - rect.left) / rect.width));
+      updateCurtain();
+    });
+    document.addEventListener('touchmove', function (e) {
+      if (!dragging) return;
+      var touch = e.touches[0];
+      var rect = container.getBoundingClientRect();
+      curtainPos = Math.max(0.02, Math.min(0.98, (touch.clientX - rect.left) / rect.width));
+      updateCurtain();
+    });
+
+    document.addEventListener('mouseup', function () { dragging = false; });
+    document.addEventListener('touchend', function () { dragging = false; });
+
+    // --- Opacity control ---
+    var opacitySlider = document.getElementById('opacity-slider');
+    var opacityVal = document.getElementById('opacity-val');
+
+    opacitySlider.addEventListener('input', function () {
+      var val = this.value / 100;
+      rightCanvas.style.opacity = val;
+      opacityVal.textContent = this.value + '%';
+    });
+
+    // --- Stain selection ---
+    var selectLeft = document.getElementById('select-left');
+    var selectRight = document.getElementById('select-right');
+    var labelLeft = document.getElementById('label-left');
+    var labelRight = document.getElementById('label-right');
+
+    selectLeft.addEventListener('change', function () {
+      var stain = this.value;
+      viewerLeft.open(tileSources[stain]);
+      labelLeft.textContent = stainLabels[stain];
+      resetOffset();
+    });
+
+    selectRight.addEventListener('change', function () {
+      var stain = this.value;
+      viewerRight.open(tileSources[stain]);
+      labelRight.textContent = stainLabels[stain];
+      resetOffset();
+    });
+
+    // --- Orientation controls ---
+    var rotInputLeft = document.getElementById('rot-left');
+    var rotInputRight = document.getElementById('rot-right');
+    var viewers = { left: viewerLeft, right: viewerRight };
+    var rotInputs = { left: rotInputLeft, right: rotInputRight };
+
+    function setRotation(side, degrees) {
+      degrees = ((degrees % 360) + 360) % 360;
+      viewers[side].viewport.setRotation(degrees);
+      rotInputs[side].value = degrees;
+    }
+
+    document.querySelectorAll('[data-rot]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var side = this.getAttribute('data-rot');
+        var step = parseInt(this.getAttribute('data-step'), 10);
+        var current = viewers[side].viewport.getRotation();
+        setRotation(side, current + step);
+      });
+    });
+
+    rotInputLeft.addEventListener('change', function () {
+      setRotation('left', parseFloat(this.value) || 0);
+    });
+    rotInputRight.addEventListener('change', function () {
+      setRotation('right', parseFloat(this.value) || 0);
+    });
+
+    // Flip controls
+    var flipVLeft = false;
+    var flipVRight = false;
+
+    function applyVerticalFlip(viewerEl, flipped) {
+      var canvas = viewerEl.querySelector('.openseadragon-canvas');
+      if (canvas) {
+        canvas.style.transform = flipped ? 'scaleY(-1)' : '';
+      }
+    }
+
+    document.getElementById('flip-left-h').addEventListener('click', function () {
+      viewerLeft.viewport.setFlip(!viewerLeft.viewport.getFlip());
+    });
+    document.getElementById('flip-left-v').addEventListener('click', function () {
+      flipVLeft = !flipVLeft;
+      applyVerticalFlip(document.getElementById('viewer-left'), flipVLeft);
+    });
+    document.getElementById('flip-right-h').addEventListener('click', function () {
+      viewerRight.viewport.setFlip(!viewerRight.viewport.getFlip());
+    });
+    document.getElementById('flip-right-v').addEventListener('click', function () {
+      flipVRight = !flipVRight;
+      applyVerticalFlip(document.getElementById('viewer-right'), flipVRight);
+    });
+
+    // --- Align mode ---
+    var alignBtn = document.getElementById('align-btn');
+    var alignControls = document.getElementById('align-controls');
+    var alignBanner = document.getElementById('align-banner');
+    var leftEl = document.getElementById('viewer-left');
+    var rightEl = document.getElementById('viewer-right');
+    var activeSide = 'left';
+
+    function setActiveSide(side) {
+      activeSide = side;
+      if (side === 'right') {
+        rightEl.style.pointerEvents = 'auto';
+        leftEl.style.pointerEvents = 'none';
+        rightEl.style.zIndex = '3';
+        leftEl.style.zIndex = '1';
+      } else {
+        rightEl.style.pointerEvents = 'none';
+        leftEl.style.pointerEvents = 'auto';
+        rightEl.style.zIndex = '2';
+        leftEl.style.zIndex = '1';
+      }
+    }
+
+    function enterAlignMode() {
+      alignMode = true;
+      alignBtn.classList.add('active');
+      alignControls.classList.add('visible');
+      alignBanner.classList.add('visible');
+      nudgePanel.classList.add('visible');
+      nudgeSideLabel.textContent = activeSide === 'right' ? 'Right' : 'Left';
+      if (parseInt(opacitySlider.value) === 100) {
+        opacitySlider.value = 50;
+        rightCanvas.style.opacity = 0.5;
+        opacityVal.textContent = '50%';
+      }
+      rightCanvas.style.clipPath = 'none';
+      slider.style.display = 'none';
+      setActiveSide(activeSide);
+    }
+
+    function exitAlignMode() {
+      captureOffset();
+      alignMode = false;
+      alignBtn.classList.remove('active');
+      alignControls.classList.remove('visible');
+      alignBanner.classList.remove('visible');
+      nudgePanel.classList.remove('visible');
+      slider.style.display = '';
+      updateCurtain();
+      rightEl.style.pointerEvents = 'none';
+      leftEl.style.pointerEvents = 'auto';
+      rightEl.style.zIndex = '2';
+      leftEl.style.zIndex = '1';
+    }
+
+    alignBtn.addEventListener('click', function () {
+      if (alignMode) {
+        exitAlignMode();
+      } else {
+        enterAlignMode();
+      }
+    });
+
+    document.querySelectorAll('input[name="align-side"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        setActiveSide(this.value);
+        nudgeSideLabel.textContent = this.value === 'right' ? 'Right' : 'Left';
+      });
+    });
+
+    // --- Nudge controls ---
+    var nudgePanel = document.getElementById('nudge-panel');
+    var nudgeSideLabel = document.getElementById('nudge-side-label');
+    var nudgeStepSelect = document.getElementById('nudge-step');
+
+    function getActiveViewer() {
+      return activeSide === 'right' ? viewerRight : viewerLeft;
+    }
+
+    function getNudgeStep() {
+      return parseFloat(nudgeStepSelect.value);
+    }
+
+    document.getElementById('nudge-up').addEventListener('click', function () {
+      var v = getActiveViewer(); var c = v.viewport.getCenter();
+      v.viewport.panTo(new OpenSeadragon.Point(c.x, c.y + getNudgeStep()), true);
+    });
+    document.getElementById('nudge-down').addEventListener('click', function () {
+      var v = getActiveViewer(); var c = v.viewport.getCenter();
+      v.viewport.panTo(new OpenSeadragon.Point(c.x, c.y - getNudgeStep()), true);
+    });
+    document.getElementById('nudge-left-dir').addEventListener('click', function () {
+      var v = getActiveViewer(); var c = v.viewport.getCenter();
+      v.viewport.panTo(new OpenSeadragon.Point(c.x + getNudgeStep(), c.y), true);
+    });
+    document.getElementById('nudge-right-dir').addEventListener('click', function () {
+      var v = getActiveViewer(); var c = v.viewport.getCenter();
+      v.viewport.panTo(new OpenSeadragon.Point(c.x - getNudgeStep(), c.y), true);
+    });
+
+    document.getElementById('zoom-out-fine').addEventListener('click', function () {
+      getActiveViewer().viewport.zoomBy(0.99);
+    });
+    document.getElementById('zoom-out-med').addEventListener('click', function () {
+      getActiveViewer().viewport.zoomBy(0.95);
+    });
+    document.getElementById('zoom-in-med').addEventListener('click', function () {
+      getActiveViewer().viewport.zoomBy(1.05);
+    });
+    document.getElementById('zoom-in-fine').addEventListener('click', function () {
+      getActiveViewer().viewport.zoomBy(1.01);
+    });
+
+    // --- Keyboard zoom (Z/X) ---
+    document.addEventListener('keydown', function (event) {
+      if (event.keyCode === 90) {
+        viewerLeft.viewport.zoomBy(1.2);
+      } else if (event.keyCode === 88) {
+        viewerLeft.viewport.zoomBy(0.8);
+      }
+    });
+
+  </script>
+</body>
+
+</html>
