@@ -1,12 +1,13 @@
 <html> <!-- do not use <!DOCTYPE html> -->
 
 <head>
-  <title>Crohn's Disease, Crohn Hastalığı</title>
-  <meta name="keywords"
-    content="Crohn's Disease, Crohn Hastalığı, Inflammatory Bowel Disease, İnflamatuar Barsak Hastalığı, patoloji, atlas, pathology, whole slide image">
 
-  <meta name="description"
-    content="Crohn's Disease Crohn Hastalığı Inflammatory Bowel Disease İnflamatuar Barsak Hastalığı">
+  <title>Crohn Disease Colonoscopic Biopsy Crohn Hastalığı Kolonoskopik Biyopsi</title>
+
+  <meta name="keywords"
+    content="Crohn Disease Colonoscopic Biopsy, Crohn Hastalığı Kolonoskopik Biyopsi, patoloji, atlas, pathology, whole slide image, patoloji, atlas, pathology, whole slide image, virtual microscopy, virtual microscope, sanal mikroskop">
+
+  <meta name="description" content="Crohn Disease Colonoscopic Biopsy Crohn Hastalığı Kolonoskopik Biyopsi">
 
 
   <meta charset="utf-8" />
@@ -23,8 +24,7 @@
 
   <script src="https://images.patolojiatlasi.com/openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon.min.js"></script>
-
-  <!-- <script src="openseadragon/openseadragon-scalebar.js"></script> -->
+  <script src="./openseadragon/openseadragon-scalebar.js"></script>
 
 </head>
 
@@ -47,67 +47,68 @@
         {
           Image: {
             Url: './HE1_files/',
-            TileSize: '254',
-            Overlap: '1',
-            Format: 'jpeg',
+            TileSize: '254', Overlap: '1', Format: 'jpeg',
             ServerFormat: 'Default',
             xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
-            Size: {
-              Width: '50699',
-              Height: '39685'
-            }
+            Size: { Width: '50699', Height: '39685' }
           },
-          title: "Your notes for Image 1" // This is your note for the first image
+          title: "HE1"
         },
-
 
         {
           Image: {
             Url: './HE2_files/',
-            TileSize: '254',
-            Overlap: '1',
-            Format: 'jpeg',
+            TileSize: '254', Overlap: '1', Format: 'jpeg',
             ServerFormat: 'Default',
             xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
-            Size: {
-              Width: '40232', // see .dzi file
-              Height: '35784' // see .dzi file
-            }
-          }
+            Size: { Width: '40232', Height: '35784' }
+          },
+          title: "HE2"
         },
+
         {
           Image: {
-            Url: './HE3_files/', // name of image folder
-            TileSize: '254', // see .dzi file
-            Overlap: '1', // see .dzi file
-            Format: 'jpeg', // see .dzi file
-            ServerFormat: 'Default', // optional
-            xmlns: 'http://schemas.microsoft.com/deepzoom/2008', // see .dzi file
-            Size: {
-              Width: '47277', // see .dzi file
-              Height: '39982' // see .dzi file
-            }
-          }
+            Url: './HE3_files/',
+            TileSize: '254', Overlap: '1', Format: 'jpeg',
+            ServerFormat: 'Default',
+            xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+            Size: { Width: '47277', Height: '39982' }
+          },
+          title: "HE3"
         },
+
         {
           Image: {
-            Url: './HE4_files/', // name of image folder
-            TileSize: '254', // see .dzi file
-            Overlap: '1', // see .dzi file
-            Format: 'jpeg', // see .dzi file
-            ServerFormat: 'Default', // optional
-            xmlns: 'http://schemas.microsoft.com/deepzoom/2008', // see .dzi file
-            Size: {
-              Width: '40028', // see .dzi file
-              Height: '30353' // see .dzi file
-            }
-          }
+            Url: './HE4_files/',
+            TileSize: '254', Overlap: '1', Format: 'jpeg',
+            ServerFormat: 'Default',
+            xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+            Size: { Width: '40028', Height: '30353' }
+          },
+          title: "HE4"
         }
-        // Add other images as required
       ],
       sequenceMode: true,
       showReferenceStrip: true
     });
+
+    // Scalebar — reattached on every page change in sequence mode
+    function addScalebar() {
+      viewer.scalebar({
+        type: OpenSeadragon.ScalebarType.MICROSCOPY,
+        pixelsPerMeter: 1.98255e+06,
+        minWidth: '120px',
+        location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
+        color: 'black',
+        fontColor: 'black',
+        backgroundColor: 'rgba(255,255,255,0.65)',
+        barThickness: 3,
+        fontSize: '12px',
+        xOffset: 14,
+        yOffset: 14
+      });
+    }
+    viewer.addHandler('open', addScalebar);
 
 
 
