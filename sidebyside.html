@@ -21,6 +21,7 @@
   <script src="https://images.patolojiatlasi.com/openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon-scalebar.js"></script>
+  <script src="./openseadragon/osd-keyboard-nav.js"></script>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -76,7 +77,14 @@
     <div class="bar-sep"></div>
     <button id="btn-home" title="Reset zoom">Home</button>
     <div class="bar-sep"></div>
-    <label>Z/X keys to zoom</label>
+    <label>Pan:</label>
+    <input type="range" id="f-pan" min="1" max="10" value="5" style="width:60px;accent-color:#fff;cursor:pointer" title="Keyboard pan speed">
+    <span id="v-pan" style="font-size:12px;color:#aaa;min-width:14px">5</span>
+    <label>Zoom:</label>
+    <input type="range" id="f-zmspd" min="1" max="10" value="5" style="width:60px;accent-color:#fff;cursor:pointer" title="Keyboard zoom speed">
+    <span id="v-zmspd" style="font-size:12px;color:#aaa;min-width:14px">5</span>
+    <div class="bar-sep"></div>
+    <label style="font-weight:normal;font-size:11px;color:#aaa">WASD/Arrows + Z/X</label>
   </div>
 
   <!-- Update panel labels, select options, and default selections to match your stains -->
@@ -299,13 +307,17 @@
       }
     });
 
-    // --- Keyboard zoom (Z/X) ---
-    document.addEventListener('keydown', function (event) {
-      if (event.keyCode === 90) {
-        viewers[0].viewport.zoomBy(1.2);
-      } else if (event.keyCode === 88) {
-        viewers[0].viewport.zoomBy(0.8);
-      }
+    // ---- Keyboard navigation (WASD/arrows pan + Z/X zoom) ----
+    // Targets first viewer; sync handler propagates to all panels.
+    var kbNav = OSDKeyboardNav(viewers[0]);
+
+    document.getElementById('f-pan').addEventListener('input', function () {
+      kbNav.panStep = this.value * 0.0005;
+      document.getElementById('v-pan').textContent = this.value;
+    });
+    document.getElementById('f-zmspd').addEventListener('input', function () {
+      kbNav.zoomFactor = 1 + this.value * 0.002;
+      document.getElementById('v-zmspd').textContent = this.value;
     });
 
   </script>
