@@ -1,12 +1,10 @@
 <html> <!-- do not use <!DOCTYPE html> -->
 
 <head>
-  <title>Crohn's Disease, Crohn Hastalığı</title>
-  <meta name="keywords"
-    content="Crohn's Disease, Crohn Hastalığı, Inflammatory Bowel Disease, İnflamatuar Barsak Hastalığı, patoloji, atlas, pathology, whole slide image">
+  <title>Crohn Disease Colonoscopic Biopsy Crohn Hastalığı Kolonoskopik Biyopsi</title>
+  <meta name="keywords" content="Crohn Disease Colonoscopic Biopsy, Crohn Hastalığı Kolonoskopik Biyopsi, patoloji, atlas, pathology, whole slide image">
 
-  <meta name="description"
-    content="Crohn's Disease Crohn Hastalığı Inflammatory Bowel Disease İnflamatuar Barsak Hastalığı">
+  <meta name="description" content="Crohn Disease Colonoscopic Biopsy Crohn Hastalığı Kolonoskopik Biyopsi">
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,97 +20,584 @@
 
   <script src="https://images.patolojiatlasi.com/openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon.min.js"></script>
+  <script src="./openseadragon/openseadragon-scalebar.js"></script>
+  <script src="./openseadragon/osd-middle-pan.js"></script>
 
-  <!-- <script src="openseadragon/openseadragon-scalebar.js"></script> -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; background: #1a1a1a; color: #fff;
+                 font-family: Arial, sans-serif; overflow: hidden; }
+
+    #openseadragon1 { width: 100%; height: 100%; }
+
+    /* Visual feedback while middle-click pan-lock is active. Pointer Lock
+       hides the cursor, so the viewer gets a subtle blue outline instead. */
+    .mid-pan { outline: 2px solid rgba(108, 204, 255, 0.7); outline-offset: -2px; }
+
+    /* ---- Toolbar (filters + magnifier) ---- */
+    #toolbar {
+      position: absolute; top: 10px; right: 10px; z-index: 100;
+      background: rgba(0,0,0,0.78); padding: 10px 12px; border-radius: 8px;
+      display: flex; flex-direction: column; gap: 6px; font-size: 12px;
+      user-select: none; width: 250px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+    #toolbar h4 {
+      font-size: 10px; color: #9cf; margin: 2px 0; text-transform: uppercase;
+      letter-spacing: 0.8px; font-weight: bold;
+    }
+    .ctrl-row { display: flex; gap: 6px; align-items: center; }
+    .ctrl-row label { flex: 0 0 66px; font-size: 11px; color: #ddd; }
+    .ctrl-row input[type="range"] { flex: 1; accent-color: #6cf; cursor: pointer; min-width: 0; }
+    .ctrl-row span { flex: 0 0 30px; text-align: right; color: #6cf; font-size: 11px; }
+    .btn-row { display: flex; gap: 4px; }
+    .btn-row button {
+      flex: 1; padding: 5px 6px; border-radius: 4px; border: 1px solid #555;
+      background: #333; color: #fff; font-size: 11px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-row button:hover { background: #555; }
+    .btn-row button.active { background: #06a; border-color: #09d; color: #fff; }
+    #toolbar-collapse {
+      position: absolute; top: 4px; right: 6px; background: none; border: none;
+      color: #aaa; font-size: 14px; cursor: pointer; padding: 2px 4px;
+    }
+    #toolbar-collapse:hover { color: #fff; }
+    #toolbar.collapsed .ctrl-row,
+    #toolbar.collapsed .btn-row,
+    #toolbar.collapsed h4 { display: none; }
+    #toolbar.collapsed { width: auto; padding: 6px 10px; }
+    #toolbar.collapsed::before {
+      content: 'Tools'; font-weight: bold; color: #9cf; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+
+    /* ---- Magnifier lens ---- */
+    #magnifier {
+      position: fixed; z-index: 90;
+      width: 240px; height: 240px; border-radius: 50%;
+      box-shadow: 0 0 0 2px #fff, 0 4px 20px rgba(0,0,0,0.6);
+      overflow: hidden; background: #000;
+      opacity: 0; left: 0; top: 0;
+    }
+    /* OSD's inner canvas defaults to pointer-events:auto and would steal mouse
+       events from the main viewer once the lens follows the cursor. Force every
+       descendant transparent to events with !important. */
+    #magnifier, #magnifier * { pointer-events: none !important; }
+    #magnifier.active { opacity: 1; }
+    #magnifier-viewer { width: 100%; height: 100%; }
+    #magnifier-crosshair {
+      position: absolute; top: 50%; left: 50%;
+      width: 20px; height: 20px; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    #magnifier-crosshair::before,
+    #magnifier-crosshair::after {
+      content: ''; position: absolute; background: rgba(255,0,0,0.6);
+    }
+    #magnifier-crosshair::before { top: 9px; left: 0; width: 20px; height: 2px; }
+    #magnifier-crosshair::after  { top: 0; left: 9px; width: 2px; height: 20px; }
+  </style>
 
 </head>
 
 <body>
 
-  <div id="openseadragon1" style="width: 100%; height: 95%;"></div>
+  <div id="openseadragon1"></div>
 
+  <div id="magnifier">
+    <div id="magnifier-viewer"></div>
+    <div id="magnifier-crosshair"></div>
+  </div>
 
+  <div id="toolbar">
+    <button id="toolbar-collapse" title="Collapse/expand toolbar">&minus;</button>
+    <h4>Image Filters</h4>
+    <div class="ctrl-row"><label>Brightness</label>
+      <input type="range" id="f-bright" min="50" max="200" value="100"><span id="v-bright">100</span></div>
+    <div class="ctrl-row"><label>Contrast</label>
+      <input type="range" id="f-contrast" min="50" max="200" value="100"><span id="v-contrast">100</span></div>
+    <div class="ctrl-row"><label>Saturation</label>
+      <input type="range" id="f-sat" min="0" max="200" value="100"><span id="v-sat">100</span></div>
+    <div class="ctrl-row"><label>Gamma</label>
+      <input type="range" id="f-gamma" min="50" max="200" value="100"><span id="v-gamma">1.00</span></div>
+    <div class="btn-row">
+      <button id="f-invert">Invert</button>
+      <button id="f-gray">Grayscale</button>
+      <button id="f-reset">Reset</button>
+    </div>
 
+    <h4>Orientation</h4>
+    <div class="ctrl-row">
+      <label>Rotate</label>
+      <input type="range" id="f-rotate" min="0" max="360" value="0" step="1">
+      <span id="v-rotate">0&deg;</span>
+    </div>
 
+    <h4>Magnifier Lens</h4>
+    <div style="font-size:10px;color:#9ab;margin:-2px 0 2px;line-height:1.35">
+      Click a zoom to show the lens, click again to hide. Then move the cursor over the slide.
+    </div>
+    <div class="btn-row">
+      <button data-mag="2">2&times;</button>
+      <button data-mag="4">4&times;</button>
+      <button data-mag="8">8&times;</button>
+    </div>
 
+    <h4>Browse Heatmap</h4>
+    <div style="font-size:10px;color:#9ab;margin:-2px 0 2px;line-height:1.35">
+      Areas you've dwelled on glow on the navigator thumbnail (focused zoom-in counts more than zoom-out browsing).
+    </div>
+    <div class="btn-row">
+      <button id="hm-toggle" class="active">Visible</button>
+      <button id="hm-clear">Clear</button>
+    </div>
+  </div>
 
+  <!-- SVG filter for true gamma correction; injected once, referenced via url(#gamma-filter) -->
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="gamma-filter">
+      <feComponentTransfer>
+        <feFuncR type="gamma" amplitude="1" exponent="1" offset="0"/>
+        <feFuncG type="gamma" amplitude="1" exponent="1" offset="0"/>
+        <feFuncB type="gamma" amplitude="1" exponent="1" offset="0"/>
+      </feComponentTransfer>
+    </filter>
+  </svg>
 
   <script type="text/javascript">
+    // ---- Tile source (shared by main viewer + magnifier viewer) ----
+    var tileSource = {
+      Image: {
+        Url: './HE1_files/',
+        TileSize: '254', // see .dzi file
+        Overlap: '1', // see .dzi file
+        Format: 'jpeg', // see .dzi file
+        ServerFormat: 'Default', // optional
+        xmlns: 'http://schemas.microsoft.com/deepzoom/2008', // see .dzi file
+        Size: {
+          Width: '50699',
+          Height: '39685'
+        }
+      }
+    };
+
     var viewer = OpenSeadragon({
       id: 'openseadragon1',
-      //        prefixUrl: 'https://images.patolojiatlasi.com/openseadragon/images/',
       prefixUrl: './openseadragon/images/',
-
-      showHomeControl: false,
+      showHomeControl: true,
       showRotationControl: true,
       showNavigator: true,
       showFlipControl: true,
+      navigatorPosition: 'BOTTOM_LEFT',
       navigatorBackground: 'rgb(240, 240, 240)',
+      tileSources: tileSource
+    });
 
+    // ---- Scalebar (µm/mm scale, essential for pathology) ----
+    // pixelsPerMeter ≈ 1 / MPP / 1e-6; 1.98255e6 ≈ 0.504 µm/px (typical 20× scan).
+    // Calibrate per scanner if/when MPP metadata becomes available.
+    viewer.scalebar({
+      type: OpenSeadragon.ScalebarType.MICROSCOPY,
+      pixelsPerMeter: 1.98255e+06,
+      minWidth: '120px',
+      location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
+      color: 'black',
+      fontColor: 'black',
+      backgroundColor: 'rgba(255,255,255,0.65)',
+      barThickness: 3,
+      fontSize: '12px',
+      xOffset: 14,
+      yOffset: 14
+    });
 
-      tileSources: {
-        Image: {
-          Url: './HE1_files/', // name of image folder
-          TileSize: '254', // see .dzi file
-          Overlap: '1', // see .dzi file
-          Format: 'jpeg', // see .dzi file
-          ServerFormat: 'Default', // optional
-          xmlns: 'http://schemas.microsoft.com/deepzoom/2008', // see .dzi file
-          Size: {
-            Width: '50699', // see .dzi file
-            Height: '39685' // see .dzi file
+    // Middle-click pan-lock (Sectra "stage drive" via Pointer Lock API).
+    // See openseadragon/osd-middle-pan.js. Middle-click to enter, any click
+    // or Escape to exit. Cursor is hidden while active; the `.mid-pan` CSS
+    // class on the container provides a blue outline as visual feedback.
+    OSDMiddlePan(viewer);
+
+    // =====================================================================
+    // CSS Filters (brightness / contrast / saturation / gamma / invert)
+    // ---------------------------------------------------------------------
+    // Apply CSS filters to the viewer's canvas container — the browser's
+    // compositor handles them at GPU speed and they survive pans/zooms with
+    // no per-tile reprocessing. Gamma uses an SVG feComponentTransfer filter
+    // referenced via url(#gamma-filter).
+    // =====================================================================
+    var canvasEl = null;
+    function getCanvas() {
+      if (!canvasEl) canvasEl = document.querySelector('#openseadragon1 .openseadragon-canvas');
+      return canvasEl;
+    }
+
+    var filterState = { bright: 100, contrast: 100, sat: 100, gamma: 1.0, invert: false, gray: false };
+
+    function applyFilters() {
+      var c = getCanvas(); if (!c) return;
+      var parts = [];
+      parts.push('brightness(' + (filterState.bright / 100) + ')');
+      parts.push('contrast(' + (filterState.contrast / 100) + ')');
+      parts.push('saturate(' + (filterState.sat / 100) + ')');
+      if (filterState.invert) parts.push('invert(1)');
+      if (filterState.gray) parts.push('grayscale(1)');
+      if (Math.abs(filterState.gamma - 1.0) > 0.001) parts.push('url(#gamma-filter)');
+      c.style.filter = parts.join(' ');
+    }
+
+    function bindFilterSlider(id, valEl, key) {
+      var el = document.getElementById(id);
+      var v = document.getElementById(valEl);
+      el.addEventListener('input', function () {
+        filterState[key] = parseInt(this.value);
+        v.textContent = this.value;
+        applyFilters();
+      });
+    }
+    bindFilterSlider('f-bright', 'v-bright', 'bright');
+    bindFilterSlider('f-contrast', 'v-contrast', 'contrast');
+    bindFilterSlider('f-sat', 'v-sat', 'sat');
+
+    document.getElementById('f-gamma').addEventListener('input', function () {
+      var g = this.value / 100;
+      filterState.gamma = g;
+      document.getElementById('v-gamma').textContent = g.toFixed(2);
+      var exp = g;
+      ['feFuncR', 'feFuncG', 'feFuncB'].forEach(function (tag) {
+        var n = document.querySelector('#gamma-filter ' + tag);
+        if (n) n.setAttribute('exponent', exp);
+      });
+      applyFilters();
+    });
+
+    document.getElementById('f-invert').addEventListener('click', function () {
+      filterState.invert = !filterState.invert;
+      this.classList.toggle('active', filterState.invert);
+      applyFilters();
+    });
+    document.getElementById('f-gray').addEventListener('click', function () {
+      filterState.gray = !filterState.gray;
+      this.classList.toggle('active', filterState.gray);
+      applyFilters();
+    });
+    document.getElementById('f-reset').addEventListener('click', function () {
+      filterState = { bright: 100, contrast: 100, sat: 100, gamma: 1.0, invert: false, gray: false };
+      document.getElementById('f-bright').value = 100;   document.getElementById('v-bright').textContent = '100';
+      document.getElementById('f-contrast').value = 100; document.getElementById('v-contrast').textContent = '100';
+      document.getElementById('f-sat').value = 100;      document.getElementById('v-sat').textContent = '100';
+      document.getElementById('f-gamma').value = 100;    document.getElementById('v-gamma').textContent = '1.00';
+      document.getElementById('f-invert').classList.remove('active');
+      document.getElementById('f-gray').classList.remove('active');
+      applyFilters();
+      // Also reset rotation back to 0° (the slider updates via the viewer rotate event)
+      viewer.viewport.setRotation(0);
+    });
+
+    // ---- Rotation slider (two-way bound to OSD's built-in rotation) ----
+    // Dragging the slider rotates the viewer; clicking OSD's built-in rotate
+    // controls keeps the slider in sync via the viewer's `rotate` event.
+    var rotSlider = document.getElementById('f-rotate');
+    var rotVal = document.getElementById('v-rotate');
+    rotSlider.addEventListener('input', function () {
+      viewer.viewport.setRotation(parseFloat(this.value) || 0);
+    });
+    viewer.addHandler('rotate', function (e) {
+      var deg = ((Math.round(e.degrees) % 360) + 360) % 360;
+      rotSlider.value = deg;
+      rotVal.textContent = deg + '\u00B0';
+    });
+
+    // =====================================================================
+    // Magnifier lens — a circular floating div containing a second tiny OSD
+    // viewer that mirrors the main viewer at N× the on-screen pixel density.
+    // It reuses the same DeepZoom tiles from the browser cache, so it's cheap.
+    // =====================================================================
+    var magEl = document.getElementById('magnifier');
+    var magViewer = null;
+    var magActive = false;
+    var magZoom = 4;
+    var lastMouse = { x: 0, y: 0 };
+
+    function ensureMagnifier() {
+      if (magViewer) return;
+      magViewer = OpenSeadragon({
+        id: 'magnifier-viewer',
+        prefixUrl: './openseadragon/images/',
+        tileSources: tileSource,
+        showNavigationControl: false,
+        showNavigator: false,
+        mouseNavEnabled: false,
+        panHorizontal: false,
+        panVertical: false,
+        visibilityRatio: 1,
+        animationTime: 0,
+        blendTime: 0,
+        immediateRender: true,
+        springStiffness: 10
+      });
+    }
+
+    function toggleMagnifier(on) {
+      magActive = on;
+      if (on) {
+        ensureMagnifier();
+        magEl.classList.add('active');
+      } else {
+        magEl.classList.remove('active');
+        document.querySelectorAll('[data-mag]').forEach(function (b) { b.classList.remove('active'); });
+      }
+    }
+
+    // Each zoom button is its own toggle: click 4× to show at 4×, click 4× again
+    // to hide. Clicking a different zoom while on simply switches the level.
+    document.querySelectorAll('[data-mag]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var z = parseInt(this.getAttribute('data-mag'));
+        if (magActive && magZoom === z) {
+          toggleMagnifier(false);
+          return;
+        }
+        magZoom = z;
+        document.querySelectorAll('[data-mag]').forEach(function (b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        if (!magActive) toggleMagnifier(true);
+        else updateMagnifier(lastMouse.x, lastMouse.y);
+      });
+    });
+
+    function updateMagnifier(clientX, clientY) {
+      if (!magActive || !magViewer) return;
+      lastMouse.x = clientX;
+      lastMouse.y = clientY;
+
+      var size = magEl.offsetWidth;
+      magEl.style.left = (clientX - size / 2) + 'px';
+      magEl.style.top  = (clientY - size / 2) + 'px';
+
+      var viewerRect = document.getElementById('openseadragon1').getBoundingClientRect();
+      var pxX = clientX - viewerRect.left;
+      var pxY = clientY - viewerRect.top;
+      var pt = viewer.viewport.pointFromPixel(new OpenSeadragon.Point(pxX, pxY));
+
+      // OSD viewport zoom is relative to the container width, so the SAME
+      // numeric zoom yields different on-screen pixel densities in viewers of
+      // different sizes. Compensate with the container width ratio so that
+      // magZoom actually means "N× what the main viewer is showing".
+      var mainW = viewer.viewport.getContainerSize().x;
+      var magW  = magViewer.viewport.getContainerSize().x;
+      var baseZoom = viewer.viewport.getZoom(true);
+      magViewer.viewport.zoomTo(baseZoom * magZoom * (mainW / magW), null, true);
+      magViewer.viewport.panTo(pt, true);
+    }
+
+    var osdEl = document.getElementById('openseadragon1');
+    osdEl.addEventListener('mousemove', function (e) { updateMagnifier(e.clientX, e.clientY); });
+    osdEl.addEventListener('mouseleave', function () { if (magActive) magEl.classList.remove('active'); });
+    osdEl.addEventListener('mouseenter', function () { if (magActive) magEl.classList.add('active'); });
+
+    viewer.addHandler('viewport-change', function () {
+      if (magActive) updateMagnifier(lastMouse.x, lastMouse.y);
+    });
+
+    document.getElementById('toolbar-collapse').addEventListener('click', function () {
+      var tb = document.getElementById('toolbar');
+      tb.classList.toggle('collapsed');
+      this.textContent = tb.classList.contains('collapsed') ? '+' : '\u2212';
+    });
+
+    // Initialize the magnifier viewer eagerly. Lazy init while the container
+    // was display:none gave OSD a 0×0 canvas and nothing ever rendered.
+    ensureMagnifier();
+
+    // =====================================================================
+    // Browse heatmap
+    // ---------------------------------------------------------------------
+    // Sample the current viewport every 250ms and accumulate dwell time into
+    // a 2D grid. Each tick deposits a fixed total weight (1) distributed
+    // evenly across the cells the viewport currently covers (1/area per cell)
+    // — so 5s of focused 40× viewing on one cell heats it more than 5s of
+    // zoomed-out browsing across the whole slide. Renders to a small canvas
+    // overlaid on the navigator thumbnail; CSS scaling smooths the cells.
+    // =====================================================================
+    var hmCanvas = null, hmCtx = null;
+    var hmW = 0, hmH = 0;
+    var hmGrid = null;
+    var hmMax = 0;
+    var hmVisible = true;
+    var hmTimer = null;
+    var hmLastCenter = null, hmLastZoom = null;
+
+    function setupHeatmap() {
+      var item = viewer.world.getItemAt(0);
+      if (!item) return;
+      var size = item.getContentSize();
+      var aspect = size.x / size.y;
+      hmW = 100;
+      hmH = Math.max(20, Math.round(hmW / aspect));
+      hmGrid = new Float32Array(hmW * hmH);
+      hmMax = 0;
+      hmLastCenter = null; hmLastZoom = null;
+
+      if (!hmCanvas) {
+        hmCanvas = document.createElement('canvas');
+        hmCanvas.style.position = 'absolute';
+        hmCanvas.style.left = '0';
+        hmCanvas.style.top = '0';
+        hmCanvas.style.width = '100%';
+        hmCanvas.style.height = '100%';
+        hmCanvas.style.pointerEvents = 'none';
+        hmCanvas.style.zIndex = '1';
+        hmCtx = hmCanvas.getContext('2d');
+      }
+      hmCanvas.width = hmW;
+      hmCanvas.height = hmH;
+
+      if (viewer.navigator && viewer.navigator.element) {
+        if (hmCanvas.parentElement !== viewer.navigator.element) {
+          viewer.navigator.element.appendChild(hmCanvas);
+        }
+      }
+      if (!hmTimer) hmTimer = setInterval(sampleHeatmap, 150);
+    }
+
+    function sampleHeatmap() {
+      if (document.hidden || !hmGrid) return;
+      var item = viewer.world.getItemAt(0);
+      if (!item) return;
+
+      // Movement gate: only count when the viewport is at rest. If it has
+      // moved meaningfully since the last tick (drag, momentum, zoom anim),
+      // skip — that means the user is in transit, not "reviewing" anything.
+      var center = viewer.viewport.getCenter();
+      var zoom = viewer.viewport.getZoom();
+      if (hmLastCenter !== null) {
+        var dx = center.x - hmLastCenter.x;
+        var dy = center.y - hmLastCenter.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var zoomDelta = hmLastZoom > 0 ? Math.abs(Math.log(zoom / hmLastZoom)) : 0;
+        if (dist > 0.0005 || zoomDelta > 0.01) {
+          hmLastCenter = center;
+          hmLastZoom = zoom;
+          return;
+        }
+      }
+      hmLastCenter = center;
+      hmLastZoom = zoom;
+
+      // Center-based cell filter: a cell counts only if its CENTER is inside
+      // the viewport. Edge-grazes during a pan no longer stain neighbours.
+      var size = item.getContentSize();
+      var b = viewer.viewport.getBounds(true);
+      var ix = b.x * size.x;
+      var iy = b.y * size.x;
+      var iw = b.width  * size.x;
+      var ih = b.height * size.x;
+      var cellW = size.x / hmW;
+      var cellH = size.y / hmH;
+      var x0 = Math.max(0,       Math.ceil (ix       / cellW - 0.5));
+      var y0 = Math.max(0,       Math.ceil (iy       / cellH - 0.5));
+      var x1 = Math.min(hmW - 1, Math.floor((ix+iw)  / cellW - 0.5));
+      var y1 = Math.min(hmH - 1, Math.floor((iy+ih)  / cellH - 0.5));
+
+      if (x1 < x0 || y1 < y0) {
+        // Viewport too small to contain any cell center (very high zoom):
+        // count the single cell containing the viewport center.
+        var cxIdx = Math.min(hmW - 1, Math.max(0, Math.floor((ix + iw / 2) / cellW)));
+        var cyIdx = Math.min(hmH - 1, Math.max(0, Math.floor((iy + ih / 2) / cellH)));
+        var idx0 = cyIdx * hmW + cxIdx;
+        var nv0 = hmGrid[idx0] + 1.0;
+        hmGrid[idx0] = nv0;
+        if (nv0 > hmMax) hmMax = nv0;
+      } else {
+        var count = (x1 - x0 + 1) * (y1 - y0 + 1);
+        var w = 1.0 / count;
+        for (var y = y0; y <= y1; y++) {
+          var row = y * hmW;
+          for (var x = x0; x <= x1; x++) {
+            var idx = row + x;
+            var nv = hmGrid[idx] + w;
+            hmGrid[idx] = nv;
+            if (nv > hmMax) hmMax = nv;
           }
         }
       }
-      // ,
-      // tileSources: "yourwsi.dzi",
-      // sequenceMode: false,
-      // autoHideControls: true,
-      // animationTime: 1.0,
-      // blendTime: 0.6,
-      // constrainDuringPan: true,
-      // maxZoomPixelRatio: 1,
-      // visibilityRatio: 1,
-      // zoomPerScrolli: 1,
-      // defaultZoomLevel: 1,
-      // showReferenceStrip: true,
-      // showNavigator:  true,
-      // showFullPageControl: false
+      if (hmVisible) renderHeatmap();
+    }
 
+    function renderHeatmap() {
+      if (!hmCtx || !hmGrid) return;
+      var img = hmCtx.createImageData(hmW, hmH);
+      var inv = hmMax > 0 ? 1.0 / hmMax : 0;
+      for (var i = 0; i < hmGrid.length; i++) {
+        var t = hmGrid[i] * inv;
+        if (t < 0.03) continue;
+        var rgb = heatColor(t);
+        img.data[i * 4]     = rgb[0];
+        img.data[i * 4 + 1] = rgb[1];
+        img.data[i * 4 + 2] = rgb[2];
+        img.data[i * 4 + 3] = rgb[3];
+      }
+      hmCtx.putImageData(img, 0, 0);
+    }
 
+    function heatColor(t) {
+      var r, g, b, k;
+      if (t < 0.25)      { k = t / 0.25;          r = 0;                  g = Math.round(255 * k);       b = 255; }
+      else if (t < 0.5)  { k = (t - 0.25) / 0.25; r = 0;                  g = 255;                       b = Math.round(255 * (1 - k)); }
+      else if (t < 0.75) { k = (t - 0.5)  / 0.25; r = Math.round(255 * k); g = 255;                       b = 0; }
+      else               { k = (t - 0.75) / 0.25; r = 255;                g = Math.round(255 * (1 - k)); b = 0; }
+      return [r, g, b, 110];
+    }
+
+    viewer.addHandler('open', setupHeatmap);
+    if (viewer.world && viewer.world.getItemCount() > 0) setupHeatmap();
+
+    document.getElementById('hm-toggle').addEventListener('click', function () {
+      hmVisible = !hmVisible;
+      this.textContent = hmVisible ? 'Visible' : 'Hidden';
+      this.classList.toggle('active', hmVisible);
+      if (hmCanvas) hmCanvas.style.display = hmVisible ? 'block' : 'none';
+    });
+    document.getElementById('hm-clear').addEventListener('click', function () {
+      if (!hmGrid) return;
+      hmGrid.fill(0);
+      hmMax = 0;
+      if (hmCtx) hmCtx.clearRect(0, 0, hmW, hmH);
     });
 
-    /*     viewer.scalebar({
-            minWidth: '100px',
-            pixelsPerMeter: '1.98255e+06',
-            fontFamily: 'Arial',
-            backgroundColor: 'rgba(255, 255, 255, 0.5)',
-            fontSize: 'small',
-            barThickness: '2',
-            xOffset: '10',
-            yOffset: '10'
-        }); */
-
-
-
-
-
-
-    // Add a keydown event listener to the document
+    // ---- Keyboard zoom (Z / X) and pan (arrows / WASD) ----
     document.addEventListener("keydown", function (event) {
-      // Check if the pressed key is 'Z' (key code 90) to zoom in
-      if (event.keyCode === 90) {
-        // Zoom in
-        viewer.viewport.zoomBy(1.2);
-      }
-      // Check if the pressed key is 'X' (key code 88) to zoom out
-      else if (event.keyCode === 88) {
-        // Zoom out
-        viewer.viewport.zoomBy(0.8);
+      switch (event.keyCode) {
+        case 90: // 'Z' key for zoom in
+          viewer.viewport.zoomBy(1.2);
+          viewer.viewport.applyConstraints();
+          break;
+        case 88: // 'X' key for zoom out
+          viewer.viewport.zoomBy(0.8);
+          viewer.viewport.applyConstraints();
+          break;
+        case 37: // Left arrow
+        case 65: // 'A'
+          viewer.viewport.panBy(new OpenSeadragon.Point(-0.05, 0));
+          viewer.viewport.applyConstraints();
+          break;
+        case 38: // Up arrow
+        case 87: // 'W'
+          viewer.viewport.panBy(new OpenSeadragon.Point(0, -0.05));
+          viewer.viewport.applyConstraints();
+          break;
+        case 39: // Right arrow
+        case 68: // 'D'
+          viewer.viewport.panBy(new OpenSeadragon.Point(0.05, 0));
+          viewer.viewport.applyConstraints();
+          break;
+        case 40: // Down arrow
+        case 83: // 'S'
+          viewer.viewport.panBy(new OpenSeadragon.Point(0, 0.05));
+          viewer.viewport.applyConstraints();
+          break;
       }
     });
-
-
 
   </script>
 </body>
