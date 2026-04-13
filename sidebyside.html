@@ -1,0 +1,314 @@
+<html> <!-- do not use <!DOCTYPE html> -->
+
+<head>
+
+  <title>Crohn Disease Colonoscopic Biopsy Crohn Hastalığı Kolonoskopik Biyopsi - Side by Side</title>
+
+  <meta name="keywords"
+    content="Crohn Disease Colonoscopic Biopsy, Crohn Hastalığı Kolonoskopik Biyopsi, patoloji, atlas, pathology, whole slide image, patoloji, atlas, pathology, whole slide image, comparison">
+
+  <meta name="description" content="Crohn Disease Colonoscopic Biopsy Crohn Hastalığı Kolonoskopik Biyopsi - synchronized side by side stain comparison">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="https://images.patolojiatlasi.com/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://images.patolojiatlasi.com/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://images.patolojiatlasi.com/img/favicon-16x16.png">
+  <link rel="manifest" href="https://images.patolojiatlasi.com/img/site.webmanifest">
+  <link rel="icon" href="https://images.patolojiatlasi.com/img/favicon.ico" type="image/x-icon" />
+
+  <script src="https://images.patolojiatlasi.com/openseadragon/openseadragon.min.js"></script>
+  <script src="./openseadragon/openseadragon.min.js"></script>
+  <script src="./openseadragon/openseadragon-scalebar.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1a1a; color: #fff; font-family: Arial, sans-serif; overflow: hidden; }
+
+    #top-bar {
+      position: relative; z-index: 100; display: flex; gap: 10px; align-items: center;
+      justify-content: center; background: rgba(0,0,0,0.85); padding: 6px 16px;
+      font-size: 13px; flex-wrap: wrap;
+    }
+    #top-bar label { font-weight: bold; }
+    #top-bar select, #top-bar button {
+      padding: 4px 8px; border-radius: 4px; border: 1px solid #555;
+      background: #333; color: #fff; font-size: 13px; cursor: pointer;
+    }
+    #top-bar button:hover { background: #555; }
+    .bar-sep { width: 1px; height: 22px; background: #555; }
+
+    #grid {
+      display: grid; width: 100%; height: calc(100vh - 38px);
+      gap: 2px; background: #000;
+    }
+    .grid-1 { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+    .grid-2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr; }
+    .grid-4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+
+    .panel { position: relative; background: #111; overflow: hidden; }
+    .panel-viewer { width: 100%; height: 100%; }
+    .panel-label {
+      position: absolute; top: 6px; left: 6px; z-index: 10;
+      background: rgba(0,0,0,0.7); color: #fff; padding: 3px 10px;
+      border-radius: 4px; font-size: 12px; font-weight: bold;
+      pointer-events: none;
+    }
+    .panel-select {
+      position: absolute; top: 6px; right: 6px; z-index: 10;
+      padding: 3px 6px; border-radius: 4px; border: 1px solid #555;
+      background: rgba(0,0,0,0.7); color: #fff; font-size: 12px; cursor: pointer;
+    }
+    .panel.hidden { display: none; }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="top-bar">
+    <label>Panels:</label>
+    <button class="panel-count-btn active" data-count="2">2</button>
+    <button class="panel-count-btn" data-count="3">3</button>
+    <button class="panel-count-btn" data-count="4">4</button>
+    <div class="bar-sep"></div>
+    <button id="btn-home" title="Reset zoom">Home</button>
+    <div class="bar-sep"></div>
+    <label>Z/X keys to zoom</label>
+  </div>
+
+  <!-- Update panel labels, select options, and default selections to match your stains -->
+  <div id="grid" class="grid-2">
+    <div class="panel" id="panel-0">
+      <div class="panel-viewer" id="viewer-0"></div>
+      <div class="panel-label" id="label-0">HE1</div>
+      <select class="panel-select" id="select-0">
+        <option value="HE1" selected>HE1</option>
+        <option value="HE2">HE2</option>
+        <option value="HE3">HE3</option>
+        <option value="HE4">HE4</option>
+      </select>
+    </div>
+    <div class="panel" id="panel-1">
+      <div class="panel-viewer" id="viewer-1"></div>
+      <div class="panel-label" id="label-1">HE2</div>
+      <select class="panel-select" id="select-1">
+        <option value="HE1">HE1</option>
+        <option value="HE2" selected>HE2</option>
+        <option value="HE3">HE3</option>
+        <option value="HE4">HE4</option>
+      </select>
+    </div>
+    <div class="panel" id="panel-2">
+      <div class="panel-viewer" id="viewer-2"></div>
+      <div class="panel-label" id="label-2">HE3</div>
+      <select class="panel-select" id="select-2">
+        <option value="HE1">HE1</option>
+        <option value="HE2">HE2</option>
+        <option value="HE3" selected>HE3</option>
+        <option value="HE4">HE4</option>
+      </select>
+    </div>
+    <div class="panel hidden" id="panel-3">
+      <div class="panel-viewer" id="viewer-3"></div>
+      <div class="panel-label" id="label-3">HE4</div>
+      <select class="panel-select" id="select-3">
+        <option value="HE1">HE1</option>
+        <option value="HE2">HE2</option>
+        <option value="HE3">HE3</option>
+        <option value="HE4" selected>HE4</option>
+      </select>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+
+    // =====================================================================
+    // TEMPLATE: Side-by-side synchronized multi-panel viewer
+    // Customize the tileSources object below with your stain names,
+    // folder paths, and dimensions from .dzi files.
+    // Also update the stainLabels, defaultStains, and <select> options.
+    // =====================================================================
+
+    // --- Tile sources — update Url, Width, Height per stain from .dzi files ---
+    var tileSources = {
+      HE1: {
+        Image: {
+          Url: './HE1_files/',
+          TileSize: '254', Overlap: '1', Format: 'jpeg',
+          ServerFormat: 'Default',
+          xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+          Size: { Width: '50699', Height: '39685' }
+        }
+      },
+      HE2: {
+        Image: {
+          Url: './HE2_files/',
+          TileSize: '254', Overlap: '1', Format: 'jpeg',
+          ServerFormat: 'Default',
+          xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+          Size: { Width: '40232', Height: '35784' }
+        }
+      },
+      HE3: {
+        Image: {
+          Url: './HE3_files/',
+          TileSize: '254', Overlap: '1', Format: 'jpeg',
+          ServerFormat: 'Default',
+          xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+          Size: { Width: '47277', Height: '39982' }
+        }
+      },
+      HE4: {
+        Image: {
+          Url: './HE4_files/',
+          TileSize: '254', Overlap: '1', Format: 'jpeg',
+          ServerFormat: 'Default',
+          xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+          Size: { Width: '40028', Height: '30353' }
+        }
+      }
+    };
+
+    var stainLabels = { HE1: 'HE1', HE2: 'HE2', HE3: 'HE3', HE4: 'HE4' };
+    var defaultStains = ['HE1', 'HE2', 'HE3', 'HE4'];
+
+    // --- Create 4 viewers ---
+    var viewers = [];
+    for (var i = 0; i < 4; i++) {
+      viewers.push(OpenSeadragon({
+        id: 'viewer-' + i,
+        prefixUrl: './openseadragon/images/',
+        tileSources: tileSources[defaultStains[i]],
+        showNavigationControl: false,
+        showNavigator: (i === 0),
+        navigatorPosition: 'BOTTOM_LEFT',
+        navigatorBackground: 'rgb(240, 240, 240)',
+        gestureSettingsMouse: { clickToZoom: false }
+      }));
+    }
+
+    // Scalebar on each panel. All viewers share pan/zoom via the sync code,
+    // so each bar reflects the same scale; per-panel display makes the unit
+    // obvious regardless of which panel the user focuses on.
+    function attachScalebar(v) {
+      v.scalebar({
+        type: OpenSeadragon.ScalebarType.MICROSCOPY,
+        pixelsPerMeter: 1.98255e+06,
+        minWidth: '100px',
+        location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
+        color: 'black',
+        fontColor: 'black',
+        backgroundColor: 'rgba(255,255,255,0.7)',
+        barThickness: 2,
+        fontSize: '11px',
+        xOffset: 10,
+        yOffset: 10
+      });
+    }
+    viewers.forEach(function (v) {
+      // Re-attach on every stain switch (open event) so it persists after
+      // viewers[idx].open(tileSources[stain]).
+      attachScalebar(v);
+      v.addHandler('open', function () { attachScalebar(v); });
+    });
+
+    // --- Synchronized pan & zoom ---
+    var syncing = false;
+
+    function syncFrom(sourceIdx) {
+      if (syncing) return;
+      syncing = true;
+      var sz = viewers[sourceIdx].viewport.getZoom();
+      var sc = viewers[sourceIdx].viewport.getCenter();
+      for (var i = 0; i < viewers.length; i++) {
+        if (i === sourceIdx) continue;
+        viewers[i].viewport.zoomTo(sz, null, true);
+        viewers[i].viewport.panTo(sc, true);
+      }
+      syncing = false;
+    }
+
+    for (var i = 0; i < 4; i++) {
+      (function (idx) {
+        viewers[idx].addHandler('viewport-change', function () {
+          syncFrom(idx);
+        });
+      })(i);
+    }
+
+    // --- Panel count ---
+    var panelCount = 2;
+    var grid = document.getElementById('grid');
+    var panels = [
+      document.getElementById('panel-0'),
+      document.getElementById('panel-1'),
+      document.getElementById('panel-2'),
+      document.getElementById('panel-3')
+    ];
+    var countBtns = document.querySelectorAll('.panel-count-btn');
+
+    function setPanelCount(n) {
+      panelCount = n;
+      grid.className = 'grid-' + n;
+      for (var i = 0; i < 4; i++) {
+        if (i < n) {
+          panels[i].classList.remove('hidden');
+        } else {
+          panels[i].classList.add('hidden');
+        }
+      }
+      countBtns.forEach(function (btn) {
+        btn.classList.toggle('active', parseInt(btn.getAttribute('data-count')) === n);
+      });
+      setTimeout(function () {
+        for (var i = 0; i < n; i++) {
+          viewers[i].viewport.goHome(true);
+        }
+      }, 100);
+    }
+
+    countBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        setPanelCount(parseInt(this.getAttribute('data-count')));
+      });
+    });
+
+    // Active button style
+    var style = document.createElement('style');
+    style.textContent = '.panel-count-btn.active { background: #06a; border-color: #09d; }';
+    document.head.appendChild(style);
+
+    // --- Stain selectors ---
+    for (var i = 0; i < 4; i++) {
+      (function (idx) {
+        document.getElementById('select-' + idx).addEventListener('change', function () {
+          var stain = this.value;
+          viewers[idx].open(tileSources[stain]);
+          document.getElementById('label-' + idx).textContent = stainLabels[stain];
+        });
+      })(i);
+    }
+
+    // --- Home button ---
+    document.getElementById('btn-home').addEventListener('click', function () {
+      for (var i = 0; i < panelCount; i++) {
+        viewers[i].viewport.goHome(false);
+      }
+    });
+
+    // --- Keyboard zoom (Z/X) ---
+    document.addEventListener('keydown', function (event) {
+      if (event.keyCode === 90) {
+        viewers[0].viewport.zoomBy(1.2);
+      } else if (event.keyCode === 88) {
+        viewers[0].viewport.zoomBy(0.8);
+      }
+    });
+
+  </script>
+</body>
+
+</html>
