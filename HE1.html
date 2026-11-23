@@ -21,6 +21,7 @@
   <script src="https://images.patolojiatlasi.com/openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon-scalebar.js"></script>
+  <script src="./openseadragon/osd-autoscalebar.js"></script>
   <script src="./openseadragon/osd-middle-pan.js"></script>
   <script src="./openseadragon/osd-keyboard-nav.js"></script>
 
@@ -205,11 +206,10 @@
     });
 
     // ---- Scalebar (µm/mm scale, essential for pathology) ----
-    // pixelsPerMeter ≈ 1 / MPP / 1e-6; 1.98255e6 ≈ 0.504 µm/px (typical 20× scan).
-    // Calibrate per scanner if/when MPP metadata becomes available.
-    viewer.scalebar({
+    // Resolution is read from this slide's own vips-properties.xml sidecar;
+    // a slide without one gets no scale bar rather than a guessed one.
+    OSDAutoScalebar(viewer, {
       type: OpenSeadragon.ScalebarType.MICROSCOPY,
-      pixelsPerMeter: 1.98255e+06,
       minWidth: '120px',
       location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
       color: 'black',

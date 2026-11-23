@@ -21,6 +21,7 @@
   <script src="https://images.patolojiatlasi.com/openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon-scalebar.js"></script>
+  <script src="./openseadragon/osd-autoscalebar.js"></script>
   <script src="./openseadragon/osd-keyboard-nav.js"></script>
 
   <style>
@@ -202,9 +203,8 @@
     // so each bar reflects the same scale; per-panel display makes the unit
     // obvious regardless of which panel the user focuses on.
     function attachScalebar(v) {
-      v.scalebar({
+      OSDAutoScalebar(v, {
         type: OpenSeadragon.ScalebarType.MICROSCOPY,
-        pixelsPerMeter: 1.98255e+06,
         minWidth: '100px',
         location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
         color: 'black',

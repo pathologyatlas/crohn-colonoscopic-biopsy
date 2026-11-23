@@ -25,6 +25,7 @@
   <script src="https://images.patolojiatlasi.com/openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon-scalebar.js"></script>
+  <script src="./openseadragon/osd-autoscalebar.js"></script>
   <script src="./openseadragon/osd-keyboard-nav.js"></script>
 
 </head>
@@ -108,9 +109,8 @@
 
     // Scalebar — reattached on every page change in sequence mode
     function addScalebar() {
-      viewer.scalebar({
+      OSDAutoScalebar(viewer, {
         type: OpenSeadragon.ScalebarType.MICROSCOPY,
-        pixelsPerMeter: 1.98255e+06,
         minWidth: '120px',
         location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
         color: 'black',

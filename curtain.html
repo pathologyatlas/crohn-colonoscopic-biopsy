@@ -21,6 +21,7 @@
   <script src="https://images.patolojiatlasi.com/openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon.min.js"></script>
   <script src="./openseadragon/openseadragon-scalebar.js"></script>
+  <script src="./openseadragon/osd-autoscalebar.js"></script>
   <script src="./openseadragon/osd-keyboard-nav.js"></script>
 
   <style>
@@ -328,9 +329,8 @@
     // Scalebar on LEFT viewer only. In align mode the two sides can drift out
     // of lock-step (different zoom ratios), so attaching to one viewer is the
     // only honest option — it reflects the scale of whatever stain is on the left.
-    viewerLeft.scalebar({
+    OSDAutoScalebar(viewerLeft, {
       type: OpenSeadragon.ScalebarType.MICROSCOPY,
-      pixelsPerMeter: 1.98255e+06,
       minWidth: '120px',
       location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
       color: 'black',
